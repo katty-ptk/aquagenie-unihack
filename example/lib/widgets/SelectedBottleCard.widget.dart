@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import '../providers/device.provider.dart';
 import '../screens/home_screen/home_screen.provider.dart';
+import '../utils/get_it.util.dart';
 
 class SelectedBottleSize extends StatefulWidget {
   final HomeScreenProvider state;
@@ -13,29 +15,11 @@ class SelectedBottleSize extends StatefulWidget {
 }
 
 class _SelectedBottleSizeState extends State<SelectedBottleSize> with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _sizeAnimation;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000)
-    );
-
-    // _sizeAnimation = TweenSequence(
-    //   <TweenSequenceItem<double>>[
-    //     TweenSequenceItem<double>(
-    //         tween: Tween<double>(
-    //           begin: 30
-    //         ),
-    //         weight: weight
-    //     )
-    //   ];
-    // )
   }
 
   @override
@@ -45,6 +29,7 @@ class _SelectedBottleSizeState extends State<SelectedBottleSize> with TickerProv
     return GestureDetector(
       onTap: () {
         state.onSelectedBottlePressed();
+        print("DEVICE PROFIVER STATUS OS: ${getIt<DeviceProvider>().deviceStatus}");
       },
       child: Card(
         shape: RoundedRectangleBorder(

@@ -27,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return Scaffold(
             body: Center(
               child: state.loading  // if proovider is fetching data, show loading. else, show data based on user status
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : state.userExists
                   ? buildProfilePage(state)
                   : ( !state.showEnterProfileInfo
@@ -45,12 +45,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("It seems you do not have a profile created."),
+        const Text("It seems you do not have a profile created."),
         TextButton(
             onPressed: () {
               state.setShowEnterProfileInfo(true);
             },
-            child: Text("create one now")
+            child: const Text("create one now")
         )
       ],
     );
@@ -65,13 +65,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Text(
             "Hi, ${state.userEmail}! ☺️",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold
             ),
         ),
 
-        SizedBox(height: 20,),
+        const SizedBox(height: 20,),
 
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 50),
@@ -93,9 +93,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 Row(
                   children: [
-                    Text("When were you born?"),
+                    const Text("When were you born?"),
 
-                    Spacer(),
+                    const Spacer(),
 
                     Text(state.dateOfBirth.year != 2023 ? state.dateOfBirth.toString() : ""),
                     IconButton(
@@ -112,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }
                       },
 
-                      icon: Icon(Icons.date_range),
+                      icon: const Icon(Icons.date_range),
                     )
                   ],
                 ),  // date of birth
@@ -121,14 +121,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 Row(
                   children: [
-                    Text("What is your weight?"),
-                    Spacer(),
+                    const Text("What is your weight?"),
+                    const Spacer(),
 
                     SizedBox(
                       width: 30,
                       child: TextFormField(
                         onChanged: (value) => state.onWeightChanged(value),
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "0",
                         ),
                         inputFormatters: [
@@ -138,9 +138,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
 
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
 
-                    Text(" kg")
+                    const Text(" kg")
                   ],
                 ),  // weight
 
@@ -148,14 +148,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 Row(
                   children: [
-                    Text("What is your height?"),
-                    Spacer(),
+                    const Text("What is your height?"),
+                    const Spacer(),
 
                    SizedBox(
                      width: 30,
                      child: TextFormField(
                        onChanged: (value) => state.onHeightChanged(value),
-                       decoration: InputDecoration(
+                       decoration: const InputDecoration(
                          hintText: "0",
                        ),
                        inputFormatters: [
@@ -165,9 +165,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                      ),
                    ),
 
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
 
-                    Text(" cm")
+                    const Text(" cm")
                   ],
                 ),  // height
 
@@ -175,8 +175,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 Row(
                   children: [
-                    Text("How active are you?"),
-                    Spacer(),
+                    const Text("How active are you?"),
+                    const Spacer(),
 
                     SizedBox(
                       width: 100,
@@ -191,7 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Center(
                                   child: Text(
                                       item,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.normal
                                       ),
@@ -215,11 +215,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         state.weight,
                         state.height,
                         state.activity_level,
-                        2000
                     );
                   },
 
-                  child: Text("save"),
+                  child: const Text("save"),
                 ) // save
               ],
             ),

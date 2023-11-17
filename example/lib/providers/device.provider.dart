@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:bluetooth_classic/bluetooth_classic.dart';
 import 'package:bluetooth_classic/models/device.dart';
@@ -18,6 +17,8 @@ class DeviceProvider extends ChangeNotifier {
   Uint8List data = Uint8List(0);
 
   StreamSubscription? subscription1, subscription2;
+
+  bool showDevices = false;
 
   String ssidText = "";
   String passwordText = "";
@@ -79,6 +80,11 @@ class DeviceProvider extends ChangeNotifier {
         scanning = true;
     }
 
+    notifyListeners();
+  }
+
+  onShowDevicesPressed() {
+    showDevices = true;
     notifyListeners();
   }
 

@@ -1,4 +1,6 @@
+import 'package:bluetooth_classic_example/providers/device.provider.dart';
 import 'package:bluetooth_classic_example/screens/home_screen/home_screen.provider.dart';
+import 'package:bluetooth_classic_example/utils/get_it.util.dart';
 import 'package:bluetooth_classic_example/widgets/SelectedBottleCard.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -114,7 +116,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // SelectedBottleSize(Icons.water_drop, 1000, state),
 
         SelectedBottleSize(state),
-
 
         const SizedBox(height: 10,),
 

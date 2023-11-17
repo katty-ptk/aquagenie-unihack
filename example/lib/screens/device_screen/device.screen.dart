@@ -2,6 +2,7 @@ import 'package:bluetooth_classic/models/device.dart';
 import 'package:bluetooth_classic_example/providers/device.provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeviceScreen extends StatelessWidget {
   const DeviceScreen({super.key});
@@ -13,62 +14,108 @@ class DeviceScreen extends StatelessWidget {
             deviceProvider.initialize();
 
             Widget connectToDevice() {
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Device status is ${deviceProvider.deviceStatus}"),
-                    TextButton(
-                      onPressed: () async {
-                        await deviceProvider.bluetoothClassicPlugin.initPermissions();
-                      },
-                      child: const Text("Check Permissions"),
-                    ),
-                    TextButton(
-                      onPressed: () async => await deviceProvider.getDevices(),
-                      child: const Text("Get Paired Devices"),
-                    ),
-                    TextButton(
-                      onPressed: deviceProvider.deviceStatus == Device.connected
-                          ? () async {
-                        await deviceProvider.bluetoothClassicPlugin.disconnect();
-                      }
-                          : null,
-                      child: const Text("disconnect"),
-                    ),
-                    TextButton(
-                      onPressed: deviceProvider.deviceStatus == Device.connected
-                          ? () async {
-                        await deviceProvider.bluetoothClassicPlugin.write("ping");
-                      }
-                          : null,
-                      child: const Text("send ping"),
-                    ),
-                    ...[
-                      for (var device in deviceProvider.devices)
-                        if ( device.name!.contains("esp".toUpperCase()) ||
-                            device.address.contains("esp".toUpperCase()) )
-                          TextButton(
+              return Center(
+                child: SizedBox(
+                  height: double.infinity,
+                  child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 50),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: TextButton(
                               onPressed: () async {
-                                await deviceProvider.bluetoothClassicPlugin.connect(
-                                    device.address,
-                                    "00001101-0000-1000-8000-00805f9b34fb");
-
-                                deviceProvider.discoveredDevices = [];
-                                deviceProvider.devices = [];
+                                await deviceProvider.bluetoothClassicPlugin.initPermissions();
                               },
-                              child: Text(device.name ?? device.address))
-                    ],
-                    TextButton(
-                      onPressed: deviceProvider.scan,
-                      child: Text(deviceProvider.scanning ? "Stop Scan" : "Start Scan"),
+                              child: const Text(
+                                  "Check BT Permissions",
+                                  style: TextStyle(
+                                    color: Colors.black26
+                                  ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: TextButton(
+                            onPressed: () async {
+                              SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                              print("REQUIRED WATER INTAKE FROM SHRAREDPREFERENCES: ${sharedPreferences.getString("required_water_intale")}");
+
+                              await deviceProvider.getDevices();
+                              deviceProvider.onShowDevicesPressed();
+                            },
+                            child: !deviceProvider.showDevices
+                                ? const Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      "It seems you are not connected to a device.",
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                  ),
+
+                                  SizedBox(height: 20,),
+
+                                  Text(
+                                      "Show Paired Devices",
+                                      style: TextStyle(
+                                        color: Colors.indigo,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18
+                                      ),
+                                  )
+                                ],
+                              )
+                                : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                for (var device in deviceProvider.devices)
+                                  if ( device.name!.contains("esp".toUpperCase()) ||
+                                      device.address.contains("esp".toUpperCase()) )
+                                    TextButton(
+                                        onPressed: () async {
+                                          await deviceProvider.bluetoothClassicPlugin.connect(
+                                              device.address,
+                                              "00001101-0000-1000-8000-00805f9b34fb");
+
+                                          deviceProvider.discoveredDevices = [];
+                                          deviceProvider.devices = [];
+
+                                          SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                                          String required_water_intake = sharedPreferences.getString("required_water_intake") ?? "";
+                                          await deviceProvider.bluetoothClassicPlugin.write("REQUIRED_WATER_INTALE->${required_water_intake}");
+                                        },
+                                        child: Text(device.name ?? device.address))
+                              ],
+                            )
+                          ),
+                        ),
+                        // ...[
+                        //   for (var device in deviceProvider.devices)
+                        //     if ( device.name!.contains("esp".toUpperCase()) ||
+                        //         device.address.contains("esp".toUpperCase()) )
+                        //       TextButton(
+                        //           onPressed: () async {
+                        //             await deviceProvider.bluetoothClassicPlugin.connect(
+                        //                 device.address,
+                        //                 "00001101-0000-1000-8000-00805f9b34fb");
+                        //
+                        //             deviceProvider.discoveredDevices = [];
+                        //             deviceProvider.devices = [];
+                        //           },
+                        //           child: Text(device.name ?? device.address))
+                        // ],
+                        // ...[
+                        //   for (var device in deviceProvider.discoveredDevices)
+                        //     Text(device.name ?? device.address)
+                        // ],
+                        // Text("Received data: ${String.fromCharCodes(deviceProvider.data)}"),
+                      ],
                     ),
-                    ...[
-                      for (var device in deviceProvider.discoveredDevices)
-                        Text(device.name ?? device.address)
-                    ],
-                    Text("Received data: ${String.fromCharCodes(deviceProvider.data)}"),
-                  ],
                 ),
               );
             }
@@ -80,10 +127,7 @@ class DeviceScreen extends StatelessWidget {
                       children: [
                         TextFormField(
                           decoration: const InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 3, color: Colors.greenAccent), //<-- SEE HERE
-                            ),
+                            enabledBorder: OutlineInputBorder(),
                             label: Text("SSID"),
                             hintText: "DIGI_40efd",
                           ),
@@ -91,26 +135,28 @@ class DeviceScreen extends StatelessWidget {
                           onChanged: (value) => deviceProvider.onSSIDChanged(value),
                         ),
 
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
                         TextFormField(
                           decoration: const InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 3, color: Colors.greenAccent), //<-- SEE HERE
-                          ),
-                          label: Text("Password"),
-                          hintText: "aebf00d",
+                            enabledBorder: OutlineInputBorder(),
+                            label: Text("Password"),
+                            hintText: "aebf00d",
                          ),
 
                           onChanged: (value) => deviceProvider.onPasswordChanged(value),
                         ),
 
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
                         TextButton(
                             onPressed: () async => await deviceProvider.sendWifiCredentialsToDevice(),
-                            child: Text("connect to wifi")
+                            child: const Text(
+                                "connect device to wifi",
+                              style: TextStyle(
+                                color: Colors.indigo
+                              ),
+                            )
                         )
                       ],
                 ),
@@ -122,7 +168,7 @@ class DeviceScreen extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return SimpleDialog( // <-- SEE HERE
-                      title: const Text('Device Settings'),
+                      title: const Center(child: Text('Device Settings')),
                       children: [wifiData()]
                     );
                   });

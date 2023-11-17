@@ -1,8 +1,12 @@
 import 'package:bluetooth_classic_example/providers/user.provider.dart';
 import 'package:bluetooth_classic_example/services/user.service.dart';
+import 'package:bluetooth_classic_example/utils/calculations.util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+@Singleton()
 class ProfileScreenProvider extends ChangeNotifier {
   UserProvider userProvider;
 
@@ -98,7 +102,13 @@ class ProfileScreenProvider extends ChangeNotifier {
           userFromFirestore["activity_level"],
           userFromFirestore["required_water_intake"]
       );
+
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      sharedPreferences.setString("required_water_intale", userFromFirestore["required_water_intake"].toString());
     }
+
+    // calculate the amount of water the user should drink
+    print("THIS USER SHOULD DRINK: ${CalculationUtil().calculateAmountOfWater(Gender().female, 89, ActivityLevel().active)}");
     
     loading = false;
     notifyListeners();
@@ -109,6 +119,32 @@ class ProfileScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  double calculateAmountOfWater() {
+    int gender;
+    int weight;
+    double activity_level;
+
+    if ( this.gender == "F" ) {
+      gender = Gender().female;
+    } else if ( this.gender == "M" ) {
+      gender = Gender().male;
+    } else {
+      gender = Gender().other;
+    }
+
+    weight = int.parse(this.weight);
+
+    if ( this.activity_level == "not active" ) {
+      activity_level = ActivityLevel().not_active;
+    } else if ( this.activity_level == "active" ) {
+      activity_level = ActivityLevel().active;
+    } else {
+      activity_level = ActivityLevel().extremely_active;
+    }
+
+    return gender * weight * activity_level;
+  }
+
   createProfileForUser(
         String email,
         String username,
@@ -116,9 +152,10 @@ class ProfileScreenProvider extends ChangeNotifier {
         int age,
         String weight,
         String height,
-        String activity_level,
-        int required_water_intake
+        String activity_level
   ) async {
+    int required_water_intale = calculateAmountOfWater().round();
+
     final userToBeCreated = UserProfileData(
         email,
         username,
@@ -127,11 +164,12 @@ class ProfileScreenProvider extends ChangeNotifier {
         weight,
         height,
         activity_level,
-        required_water_intake
+        required_water_intale
     );
 
     var result = await UserService().createUserProfileInFirestore(userToBeCreated);
     setUserExists(true);
+
     print("added user: $result");
   }
 }
