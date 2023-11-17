@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "149412820453",
+    "firebase_url": "https://bluetooth-classic-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "bluetooth-classic",
+    "storage_bucket": "bluetooth-classic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149412820453:android:8928eb1c76129dbdf0eb0c",
+        "android_client_info": {
+          "package_name": "com.matteogassend.bluetooth_classic_example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEIaSMOvICw1BQIWzj_C38JaNF2PUcvr8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
