@@ -28,11 +28,13 @@ class DeviceProvider extends ChangeNotifier {
     subscription1 ??= bluetoothClassicPlugin
         .onDeviceStatusChanged().listen((event) {
         deviceStatus = event;
+        notifyListeners();
     });
 
     subscription2 ??= bluetoothClassicPlugin
         .onDeviceDataReceived().listen((event) {
         data = Uint8List.fromList([...data, ...event]);
+        notifyListeners();
     });
   }
 
@@ -54,11 +56,13 @@ class DeviceProvider extends ChangeNotifier {
     //if (!mounted) return;
 
     platformVersion = platformVersion;
+    notifyListeners();
   }
 
   Future<void> getDevices() async {
     var res = await bluetoothClassicPlugin.getPairedDevices();
     devices = res;
+    notifyListeners();
   }
 
   Future<void> scan() async {
@@ -74,18 +78,23 @@ class DeviceProvider extends ChangeNotifier {
       );
         scanning = true;
     }
+
+    notifyListeners();
   }
 
   onSSIDChanged(String newSSID) {
     ssidText = newSSID;
+    notifyListeners();
   }
 
   onPasswordChanged(String newPassword) {
     passwordText = newPassword;
+    notifyListeners();
   }
 
   sendWifiCredentialsToDevice() async {
     print("sending SSID: ${ssidText} and password: ${passwordText} to device");
     await bluetoothClassicPlugin.write("SSID -> ${ssidText} \n PASSWORD -> ${passwordText} \n");
+    notifyListeners();
   }
 }
