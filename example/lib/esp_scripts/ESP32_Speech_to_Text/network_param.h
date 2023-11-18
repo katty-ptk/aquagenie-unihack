@@ -1,15 +1,18 @@
 #ifndef _NETWORK_PARAM_H
 #define _NETWORK_PARAM_H
 
-const char *ssid = "Olah's Galaxy A72";
-const char *password = "xevr4131";
+
+const char *ssid = "geo";
+const char *password = "12345678";
+//const char *ssid = "Olah's Galaxy A72";
+//const char *password = "xevr4131";
 const char*  server = "speech.googleapis.com";
 
 // To get the certificate for your region run:
 // openssl s_client -showcerts -connect speech.googleapis.com:443
 // Copy the certificate (all lines between and including ---BEGIN CERTIFICATE---
 // and --END CERTIFICATE--) to root.cert and put here on the root_cert variable.
-const char* root_ca= 
+ const char* root_ca= 
 "-----BEGIN CERTIFICATE-----\n"
 "MIIFljCCA36gAwIBAgINAgO8U1lrNMcY9QFQZjANBgkqhkiG9w0BAQsFADBHMQsw\n"
 "CQYDVQQGEwJVUzEiMCAGA1UEChMZR29vZ2xlIFRydXN0IFNlcnZpY2VzIExMQzEU\n"
@@ -53,7 +56,7 @@ const char* root_ca=
 //const String AccessToken = "";
 
 // It is also possible to use "API Key" instead of "Access Token". It doesn't have time limit.
-const String ApiKey = "AIzaSyC5sJO-fRsG0Vmz_rCj125CKVE89GgG5OA";
+ const String ApiKey = "AIzaSyC5sJO-fRsG0Vmz_rCj125CKVE89GgG5OA";
 
 // see https://cloud.google.com/docs/authentication?hl=ja#getting_credentials_for_server-centric_flow
 // see https://qiita.com/basi/items/3623a576b754f738138e (Japanese)

@@ -1,47 +1,40 @@
-#include "network_param.h"
+
 #define buttonPin 23
 #define RXp2 16
 #define TXp2 17
-bool sensorstate = false; // Initial state is not disrupted (0)
+//#define RXp0 3
+//#define TXp0 1
+bool sensorstate = false; 
 
 #include "Audio.h"
 #include "CloudSpeechClient.h"
-int i=0;
-#include "BluetoothSerial.h"
+bool i=false;
 
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
-//Audio audiotest;
-BluetoothSerial SerialBT;
 void setup() {
-  Serial.begin(115200);
-  Serial2.begin(115200, SERIAL_8N1, RXp2,TXp2);
   pinMode(buttonPin, INPUT_PULLUP);
-  SerialBT.begin("ESP32test"); //Bluetooth device name
-  Serial.println("The device started, now you can pair it with bluetooth!");
+  Serial.begin(115200);
+  //Serial.begin(115200, SERIAL_8N1, RXp0,TXp0);
+  Serial2.begin(115200, SERIAL_8N1, RXp2,TXp2);
+ /* #if defined(ESP32)
+  HardwareSerial SerialThree(2);
+  SerialThree.begin(115200, SERIAL_8N1, RXp0, TXp0);
+  pinMode(buttonPin, INPUT_PULLUP);
+  SerialThree.println("test");
+#else
+  Serial.println("This code is intended for ESP32. Please select an ESP32 board in the Arduino IDE.");
+#endif*/
+
+
+  
 }
 
 void loop() {
-  if (Serial.available()) {
-  while(!SerialBT.available())
-  {
-  }
-  }
   
-   // Serial.println("The device started, now you can pair it with bluetooth!");
-  //led albatru, waiting for connection
-  if (SerialBT.available()) {
-    Serial.write(SerialBT.read());
-    //ssid = citit
-    //password = citit
-  }
-   
-   if(i==0){
+   if(i==false){
    Serial.println("Press button");
-   i=1;
+   i=true;
    }
-   // Check the state of the button
+   
    while(1)
    {
     if (digitalRead(buttonPin) == LOW) {
@@ -51,7 +44,6 @@ void loop() {
      }
    }
    if(sensorstate==true){
-  //Serial2.println("\r\nPlease Ask!\r\n");
   Serial.println("\r\nRecord start!");
   Audio* audioR = new Audio(ADMP441);
   audioR->Record();
@@ -61,7 +53,7 @@ void loop() {
   cloudSpeechClient->Transcribe(audioR);
   delete cloudSpeechClient;
   delete audioR;
-  i=0;
+  i=false;
   }
   sensorstate=false;
  

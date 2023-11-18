@@ -1,40 +1,27 @@
+String inputString = "ssid->roland\n->password->denis";
 
-#include <string.h>
-#include <stdio.h>
-void printDecodedString(char stringToDecode[]){
-    char wifi_ssid[20], wifi_password[20];
-
-    char *copy = strdup(stringToDecode);  // Create a copy of the string
-    if (copy == NULL) {
-        fprintf(stderr, "Memory allocation failed");
-        return;
-    }
-
-    // Handle the first token separately
-    char *token = strtok(copy, "\n");
-    if (token != NULL) {
-      //  printf("One copy: %s\n", token);
-        strcpy(wifi_ssid, strchr(token, '>') + 1);
-    }
-
-    // Continue with the rest of the tokens
-    while (token != NULL) {
-        token = strtok(NULL, "\n");
-        if (token != NULL) {
-            strcpy(wifi_password, strchr(token, '>') + 1);
-        }
-    }
-
-    Serial.println( wifi_ssid);
-    Serial.println( wifi_password);
+void setup() {
+  Serial.begin(115200);
+  extractValues("ssid->roland\n->password->denis");
 }
 
-void setup(){
- Serial.begin(115200);
-printDecodedString("ssid->viwrnvir\npassword->eerber");
+void loop() {
+  // Your main code here
 }
 
+void extractValues(String input) {
+  // Find the position of "->" to locate the username
+  int usernameStart = input.indexOf("->") + 2;
+  int usernameEnd = input.indexOf("\n", usernameStart);
+  String username = input.substring(usernameStart, usernameEnd);
 
-void loop(){
-    
+  // Find the position of "->" after "password" to locate the password
+  int passwordStart = input.indexOf("password->") + 10;
+  String password = input.substring(passwordStart);
+
+  // Print the extracted values
+  Serial.print("Username: ");
+  Serial.println(username);
+  Serial.print("Password: ");
+  Serial.println(password);
 }

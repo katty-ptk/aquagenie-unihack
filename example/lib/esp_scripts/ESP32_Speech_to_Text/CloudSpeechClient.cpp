@@ -6,8 +6,8 @@
 #include <Arduino.h>
 #include <HTTPClient.h>
 
-const char* chatgpt_token = "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";
-
+const char* chatgpt_token = "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";
+  // Declare password as a pointer to a constant character
 CloudSpeechClient::CloudSpeechClient(Authentication authentication) {
   this->authentication = authentication;
   WiFi.begin(ssid, password);
