@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bluetooth_classic_example/providers/auth.provider.dart';
 import 'package:bluetooth_classic_example/providers/user.provider.dart';
 import 'package:bluetooth_classic_example/screens/profile_screen/profile_screen.provider.dart';
 import 'package:bluetooth_classic_example/utils/get_it.util.dart';
@@ -240,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           buildUpperContainer(state),
-          SingleChildScrollView(child: buildBottomContainer(state))
+          SingleChildScrollView(child: buildBottomContainer(state)),
         ],
       ),
     );
@@ -276,10 +277,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: ListView(
             children: [
               InfoCard("Age", state.userProfileData!.age.toString()),
-              InfoCard("Weight", state.userProfileData!.weight.toString()),
-              InfoCard("Height", state.userProfileData!.height.toString()),
+              InfoCard("Weight (kg)", state.userProfileData!.weight.toString()),
+              InfoCard("Height (cm)", state.userProfileData!.height.toString()),
               InfoCard("Activity Level", state.userProfileData!.activity_level.toString()),
-              InfoCard("Required Water Intake", state.userProfileData!.required_water_intake.toString()),
+              InfoCard("Required Water Intake (ml)", state.userProfileData!.required_water_intake.toString()),
+              ElevatedButton(onPressed: () => getIt<AuthProvider>().signOut(), child: Text("sign out"))
             ],
       ),
     );

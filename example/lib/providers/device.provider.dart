@@ -26,23 +26,23 @@ class DeviceProvider extends ChangeNotifier {
   initialize() {
 //    initPlatformState();
 
-    subscription1 ??= bluetoothClassicPlugin
-        .onDeviceStatusChanged().listen((event) {
-        deviceStatus = event;
-        notifyListeners();
+    subscription1 ??=
+        bluetoothClassicPlugin.onDeviceStatusChanged().listen((event) {
+      deviceStatus = event;
+      notifyListeners();
+      print('Subscription1 is here');
     });
 
-    subscription2 ??= bluetoothClassicPlugin
-        .onDeviceDataReceived().listen((event) {
-        data = Uint8List.fromList([...data, ...event]);
-        notifyListeners();
+    subscription2 ??=
+        bluetoothClassicPlugin.onDeviceDataReceived().listen((event) {
+      data = Uint8List.fromList([...data, ...event]);
+      print("Data from subscription2: $data");
+      notifyListeners();
     });
   }
 
   Future<void> initPlatformState() async {
     String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
 
     try {
       platformVersion = await BluetoothClassic().getPlatformVersion() ??
@@ -68,11 +68,11 @@ class DeviceProvider extends ChangeNotifier {
     } else {
       await bluetoothClassicPlugin.startScan();
       bluetoothClassicPlugin.onDeviceDiscovered().listen(
-            (event) {
-            discoveredDevices = [...discoveredDevices, event];
+        (event) {
+          discoveredDevices = [...discoveredDevices, event];
         },
       );
-        scanning = true;
+      scanning = true;
     }
 
     notifyListeners();
@@ -95,7 +95,8 @@ class DeviceProvider extends ChangeNotifier {
 
   sendWifiCredentialsToDevice() async {
     print("sending SSID: ${ssidText} and password: ${passwordText} to device");
-    await bluetoothClassicPlugin.write("SSID -> ${ssidText} \n PASSWORD -> ${passwordText} \n");
+    await bluetoothClassicPlugin
+        .write("SSID -> ${ssidText} \n PASSWORD -> ${passwordText} \n");
     notifyListeners();
   }
 }

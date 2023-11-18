@@ -85,35 +85,13 @@ class DeviceScreen extends StatelessWidget {
                                           deviceProvider.discoveredDevices = [];
                                           deviceProvider.devices = [];
 
-                                          SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                                          String required_water_intake = sharedPreferences.getString("required_water_intake") ?? "";
-                                          await deviceProvider.bluetoothClassicPlugin.write("REQUIRED_WATER_INTALE->${required_water_intake}");
+                                          await deviceProvider.bluetoothClassicPlugin.write("REQUIRED_WATER_INTAKE->2400M");
                                         },
                                         child: Text(device.name ?? device.address))
                               ],
                             )
                           ),
                         ),
-                        // ...[
-                        //   for (var device in deviceProvider.devices)
-                        //     if ( device.name!.contains("esp".toUpperCase()) ||
-                        //         device.address.contains("esp".toUpperCase()) )
-                        //       TextButton(
-                        //           onPressed: () async {
-                        //             await deviceProvider.bluetoothClassicPlugin.connect(
-                        //                 device.address,
-                        //                 "00001101-0000-1000-8000-00805f9b34fb");
-                        //
-                        //             deviceProvider.discoveredDevices = [];
-                        //             deviceProvider.devices = [];
-                        //           },
-                        //           child: Text(device.name ?? device.address))
-                        // ],
-                        // ...[
-                        //   for (var device in deviceProvider.discoveredDevices)
-                        //     Text(device.name ?? device.address)
-                        // ],
-                        // Text("Received data: ${String.fromCharCodes(deviceProvider.data)}"),
                       ],
                     ),
                 ),
@@ -185,12 +163,12 @@ class DeviceScreen extends StatelessWidget {
                         icon: const Icon(Icons.settings)),
                   ),
 
-                  const Center(
+                  Center(
                     child: SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("device info")
+                          Text("Received data: ${String.fromCharCodes(deviceProvider.data)}")
                         ],
                       ),
                     ),
@@ -198,7 +176,6 @@ class DeviceScreen extends StatelessWidget {
                 ],
               );
             }
-
             return Scaffold(
               body: deviceProvider.deviceStatus != Device.connected
                   ? connectToDevice()

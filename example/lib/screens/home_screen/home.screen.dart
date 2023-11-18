@@ -1,11 +1,13 @@
-import 'package:bluetooth_classic_example/providers/device.provider.dart';
+import 'package:bluetooth_classic_example/repos/water_tracker.repo.dart';
 import 'package:bluetooth_classic_example/screens/home_screen/home_screen.provider.dart';
+import 'package:bluetooth_classic_example/screens/profile_screen/profile_screen.provider.dart';
 import 'package:bluetooth_classic_example/utils/get_it.util.dart';
 import 'package:bluetooth_classic_example/widgets/SelectedBottleCard.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,17 +21,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        return HomeScreenProvider();
+        return HomeScreenProvider(getIt<WaterTracker>());
       },
 
       child: Consumer<HomeScreenProvider>(
         builder: (context, state, _) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                buildCurrentAndGoal(state),
-                buildWaterTracker(state),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  buildCurrentAndGoal(state),
+                  buildWaterTracker(state),
+
+                  const SizedBox(height: 50,),
+
+                  buildChart(state)
+                ],
+              ),
             );
           }
       ),
@@ -52,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget buildCurrentAndGoal(HomeScreenProvider state) {
     return Padding(
-      padding: EdgeInsets.only(top: 80, bottom: 50),
+      padding: const EdgeInsets.only(top: 80, bottom: 50),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -70,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               const SizedBox(height: 15,),
 
               Text(
-                "${(state.waterPercentage * 1000).round()}ml",
+                "${getIt<WaterTracker>().totalMillis}ml",
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -82,10 +90,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           const SizedBox(width: 50,),
 
-          const Column(
+          Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Goal",
                   style: TextStyle(
                       fontSize: 20,
@@ -93,11 +101,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
 
-                SizedBox(height: 15,),
+                const SizedBox(height: 15,),
 
                 Text(
-                  "2000ml",
-                  style: TextStyle(
+                  getIt<ProfileScreenProvider>().required_water_intake.toString(),
+                  style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.indigo
@@ -125,9 +133,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
         Row(
           children: [
-            CustomBottleSizeCard(Icons.recycling, 500, state),
-            CustomBottleSizeCard(Icons.ac_unit, 330, state),
-            CreateNewBottleSizeCard(state)
+            CustomBottleSizeCard(330, state),
+            CustomBottleSizeCard(500, state),
+            CustomBottleSizeCard(1000, state),
           ],
         )
       ],
@@ -177,11 +185,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget CustomBottleSizeCard(IconData icon, int millis, HomeScreenProvider state) {
+  Widget CustomBottleSizeCard(int millis, HomeScreenProvider state) {
     return GestureDetector(
       onTap: () {
           state.onChangeSelectedBottle(millis);
-          HapticFeedback.heavyImpact();
         },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -244,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         animationDuration: 1000,
         radius: 85,
         lineWidth: 15,
-        percent: state.waterPercentage,
+        percent: state.waterTracker.waterPercentage,
         progressColor: Colors.green.shade700,
         backgroundColor: Colors.green.shade100,
         circularStrokeCap: CircularStrokeCap.round,
@@ -252,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${(state.waterPercentage * 100).round()}%",
+              "${(state.waterTracker.waterPercentage * 100).round()}%",
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
@@ -260,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
 
-            Text(
+            const Text(
               "to daily goal",
               style: TextStyle(
                   fontSize: 18,
@@ -272,4 +279,68 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     );
   }
+
+  Widget buildChart(HomeScreenProvider state) {
+    return Column(
+      children: [
+        const Text(
+            "Here is your summary for today: ",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+
+        const SizedBox(height: 30,),
+
+        SfCartesianChart(
+          // plotAreaBackgroundColor: Colors.blue.shade100,
+          enableAxisAnimation: true,
+          primaryXAxis: CategoryAxis(),
+          palette: const <Color>[
+            Color.fromRGBO(75, 135, 185, 1),
+            Color.fromRGBO(192, 108, 132, 1),
+            Color.fromRGBO(246, 114, 128, 1),
+            Color.fromRGBO(248, 177, 149, 1),
+            Color.fromRGBO(116, 180, 155, 1),
+            Color.fromRGBO(0, 168, 181, 1),
+            Color.fromRGBO(73, 76, 162, 1),
+            Color.fromRGBO(255, 205, 96, 1),
+            Color.fromRGBO(255, 240, 219, 1),
+            Color.fromRGBO(238, 238, 238, 1)
+          ],
+          series: <ChartSeries>[
+            LineSeries<ChartData, String>(
+              enableTooltip: true,
+              dataSource: [
+                ChartData('8:00', 330),
+                ChartData('10:35', 80),
+                ChartData('12:15', 300),
+                ChartData('14:20', 330),
+                ChartData('17:30', 500)
+              ],
+              xValueMapper: (ChartData data, _) => data.x,
+              yValueMapper: (ChartData data, _) => data.y,
+              dataLabelSettings: const DataLabelSettings(isVisible : true),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 50,),
+      ],
+    );
+  }
+}
+
+class ChartData {
+  ChartData(this.x, this.y);
+  final String x;
+  final double? y;
+}
+
+class BottleSize {
+  BottleSize(this.millis, this.selected);
+
+  final int millis;
+  final bool selected;
 }
