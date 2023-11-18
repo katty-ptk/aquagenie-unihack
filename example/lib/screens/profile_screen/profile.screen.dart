@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:bluetooth_classic_example/providers/user.provider.dart';
 import 'package:bluetooth_classic_example/screens/profile_screen/profile_screen.provider.dart';
 import 'package:bluetooth_classic_example/utils/get_it.util.dart';
@@ -25,15 +27,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Consumer<ProfileScreenProvider>(
         builder: (context, state, _) {
           return Scaffold(
-            body: Center(
-              child: state.loading  // if proovider is fetching data, show loading. else, show data based on user status
-                ? const CircularProgressIndicator()
-                : state.userExists
-                  ? buildProfilePage(state)
-                  : ( !state.showEnterProfileInfo
-                  ? buildAskToCreateProfile(state)
-                  : buildEnterProfileData(state)
-              )
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: state.loading  // if provider is fetching data, show loading. else, show data based on user status
+                  ? [const CircularProgressIndicator()]
+                  : state.userExists
+                    ? [Center(child: buildProfilePage(state))]
+                    : !state.showEnterProfileInfo
+                    ? [Center(child: buildAskToCreateProfile(state))]
+                    : [Center(child: buildEnterProfileData(state))]
+              ),
             ),
           );
         },
@@ -229,62 +233,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget buildProfilePage(ProfileScreenProvider state) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "${state.userProfileData!.username}, ${state.userProfileData!.gender}",
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildUpperContainer(state),
+          SingleChildScrollView(child: buildBottomContainer(state))
+        ],
+      ),
+    );
+  }
+
+  Widget buildUpperContainer(ProfileScreenProvider state) {
+    return Container(
+      height: 300,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Colors.black87,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30)
+        )
+      ),
+      child: Center(
+        child: Text(
+            "${state.userProfileData!.username}, ${state.userProfileData!.gender}",
+            style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              color: Colors.white
+            ),
           ),
+      ),
+    );
+  }
+
+  Widget buildBottomContainer(ProfileScreenProvider state) {
+    return Container(
+      height: 500,
+      child: ListView(
+            children: [
+              InfoCard("Age", state.userProfileData!.age.toString()),
+              InfoCard("Weight", state.userProfileData!.weight.toString()),
+              InfoCard("Height", state.userProfileData!.height.toString()),
+              InfoCard("Activity Level", state.userProfileData!.activity_level.toString()),
+              InfoCard("Required Water Intake", state.userProfileData!.required_water_intake.toString()),
+            ],
+      ),
+    );
+  }
+
+  Widget InfoCard(String key, String value){
+    return Container(
+      height: 90,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+            elevation: 20,
+            shadowColor: Colors.black87,
+            // color: Colors.pink.shade100,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              //set border radius more than 50% of height and width to make circle
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        key,
+                      style: TextStyle(
+                        fontSize: 16,
+                        // fontWeight: FontWeight.bold,
+                        color: Colors.indigo.shade300
+                      ),
+                    ),
+
+                    Divider(
+                      thickness: 3,
+                      color: Colors.grey.shade200,
+                    ),
+
+                    Text(
+                        value,
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        color: Colors.indigo
+                      ),
+                    ),
+                  ],
+                ),
+            ),
         ),
-
-        const SizedBox(height: 20,),
-
-        Text(
-          "Age:  ${state.userProfileData!.age}",
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-
-        const SizedBox(height: 20,),
-
-        Text(
-          "Weight:  ${state.userProfileData!.weight}",
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-
-        const SizedBox(height: 20,),
-
-        Text(
-          "Height:  ${state.userProfileData!.height}",
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-
-        const SizedBox(height: 20,),
-
-        Text(
-          "Activity Level:  ${state.userProfileData!.activity_level}",
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-
-        const SizedBox(height: 20,),
-
-        Text(
-          "Required water intake:  ${state.userProfileData!.required_water_intake}ml",
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-      ],
     );
   }
 }
