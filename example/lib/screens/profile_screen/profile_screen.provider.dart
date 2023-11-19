@@ -17,6 +17,8 @@ class ProfileScreenProvider extends ChangeNotifier {
 
   bool loading = true;
 
+  late int required_water_intake;
+
   // user data
   String username = "";
   onUsernameChanged(String newUsername) {
@@ -104,7 +106,8 @@ class ProfileScreenProvider extends ChangeNotifier {
       );
 
       SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      sharedPreferences.setString("required_water_intale", userFromFirestore["required_water_intake"].toString());
+      sharedPreferences.setString("required_water_intake", userFromFirestore["required_water_intake"].toString());
+      required_water_intake = userFromFirestore["required_water_intake"];
     }
 
     // calculate the amount of water the user should drink

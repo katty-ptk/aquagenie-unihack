@@ -41,6 +41,14 @@ class AuthProvider extends ChangeNotifier {
   bool showWeightPicker = false;
   setShowWeightPicker(bool value) => showWeightPicker = value;
 
+  AuthProvider() {
+    print("constructor");
+    _userSignedIn = FirebaseAuth.instance.currentUser != null;
+    if ( _userSignedIn ) {
+      user = FirebaseAuth.instance.currentUser;
+    }
+  }
+
   signIn() async {
     User? loginResponse = await AuthService().login(emailText, passwordText);
     if ( loginResponse != null) {
