@@ -1,1 +1,7 @@
-### aquagenie
+### AquaGenie - subtracks
+
+### 1 - Best use of Google Cloud 
+We are using the SpeechToText API provided by Google Cloud. It is used for voice communication between the user and our device where the user can ask the device questions about its state. This feature acts as a personal assistant that can answer your questions so that you don't need to take out your phone to check your progress. By integrating this advanced voice communication system, we aim to enhance user convenience, making interaction with the device more natural and efficient.
+
+### 2 - Most Innovative Startup Idea
+We get so caught up in things we do every day that we often forget to stay hydrated. Which is a very important factor in our health! That's where AquaGenie comes to help: it is not like the other water reminder kind of apps, it is a device and an app all at once, which makes it harder for the user to mock the water drinking process. The device represents a bottle holder that can be used with pretty much any type of bottle up to 2 L. The app is where the user also checks their “statistics” for the day, meaning the water they drank already. Values can also be added manually in case the user wants to count the water drank while not at home, but mostly the app allows the user to monitor your progress throughout the day.  In addition to that, the device also has a personal assistant implemented inside. Using 2 ESP32’s with SpeechToText and TextToSpeech, it can answer your questions.
