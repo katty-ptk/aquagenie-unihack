@@ -1,35 +1,70 @@
-//This example code is in the Public Domain (or CC0 licensed, at your option.)
-//By Evandro Copercini - 2018
-//
-//This example creates a bridge between Serial and Classical Bluetooth (SPP)
-//and also demonstrate that SerialBT have the same functionalities of a normal Serial
 
-#include "BluetoothSerial.h"
+#include <BluetoothSerial.h>
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
+
+
 BluetoothSerial SerialBT;
+
+char prevCharacter = '\0';
+bool isNumber = 0;
+int num = 0;
+bool numberToBeSent = 0;
+int numartest=1234;
+bool primit = false;
 
 void setup() {
   Serial.begin(115200);
   SerialBT.begin("ESP32test"); //Bluetooth device name
   Serial.println("The device started, now you can pair it with bluetooth!");
+
+
+
 }
 
 void loop() {
+  
   if (Serial.available()) {
-   // Serial.println("The device started, now you can pair it with bluetooth!");
-  //  SerialBT.println("The device started, now you can pair it with bluetooth!");
-    //SerialBT.write("ASTA E UNA: ", Serial.read());
   }
+  //if(primit==false)
+  //{
   if (SerialBT.available()) {
-    Serial.write(SerialBT.read());
+    char btChar = SerialBT.read(); // Read the character from Bluetooth
+    //Serial.write(btChar); // Write the character to Serial
+    if (isNumber) {
+      if (btChar >= 48 && btChar <= 57) {
+        num = num * 10 + btChar - 48;
+      }
+      else {
+        isNumber = 0;
+        numberToBeSent = 1;
+        //Serial.println(num);
+        //Serial.println("Number ready to be sent.");
+        //Serial.println(num);
+      }
+    }
 
-   // printf("\nprintln is now acting");
-  //  SerialBT.println("The device started, now you can pair it with bluetooth!");
-   // Serial.println("Now serialBT is printing");
+    if (prevCharacter == '-' && btChar == '>') {
+      isNumber = 1;
+    }
+    prevCharacter = btChar;
+    if (numberToBeSent) {
+        String numStr = String(num);
+        uint8_t buf[numStr.length()];
+        memcpy(buf, numStr.c_str(), numStr.length());
+        SerialBT.write(buf, numStr.length());
+        numberToBeSent = 0;
+        Serial.println("Number was sent.");
+        primit=true;
+    }
   }
+  //}
+  
   delay(20);
+  
+ 
+  
 }

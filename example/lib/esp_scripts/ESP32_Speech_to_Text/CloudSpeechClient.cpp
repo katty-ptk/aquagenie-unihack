@@ -6,7 +6,9 @@
 #include <Arduino.h>
 #include <HTTPClient.h>
 
-const char* chatgpt_token = "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";
+
+ String TEXT = "You are a BottleHolder that measures the water that is on you and people can ask you question, you have to answer them. If the question that the client asks you is related to the water that you are measuring in the bottle then you will only answer with: *** else you will answer normally to the question without using *. The question is: ";
+const char* chatgpt_token = "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";
   // Declare password as a pointer to a constant character
 CloudSpeechClient::CloudSpeechClient(Authentication authentication) {
   this->authentication = authentication;
@@ -72,13 +74,14 @@ void CloudSpeechClient::Transcribe(Audio* audio) {
   if(chatgpt_Q)
   {
   Serial.println(chatgpt_Q);
+  TEXT = TEXT+chatgpt_Q;
   Serial.print("Asking Chat GPT");
   HTTPClient https;
   if (https.begin("https://api.openai.com/v1/completions")) {  // HTTPS
     https.addHeader("Content-Type", "application/json");
     String token_key = String("Bearer ") + chatgpt_token;
     https.addHeader("Authorization", token_key);
-    String payload = String("{\"model\": \"text-davinci-003\", \"prompt\": ") + "\"" + chatgpt_Q + "\"" + String(", \"temperature\": 0.2, \"max_tokens\": 40}");
+    String payload = String("{\"model\": \"text-davinci-003\", \"prompt\": ") + "\"" + TEXT  + "\"" + String(", \"temperature\": 0.2, \"max_tokens\":200}");
     //Instead of TEXT as Payload, can be JSON as Payload
     // start connection and send HTTP header
     int httpCode = https.POST(payload);
