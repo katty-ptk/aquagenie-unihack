@@ -1,6 +1,7 @@
 import 'package:bluetooth_classic_example/repos/water_tracker.repo.dart';
 import 'package:bluetooth_classic_example/screens/home_screen/home_screen.provider.dart';
 import 'package:bluetooth_classic_example/screens/profile_screen/profile_screen.provider.dart';
+import 'package:bluetooth_classic_example/utils/colors.util.dart';
 import 'package:bluetooth_classic_example/utils/get_it.util.dart';
 import 'package:bluetooth_classic_example/widgets/SelectedBottleCard.widget.dart';
 import 'package:flutter/material.dart';
@@ -79,10 +80,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
               Text(
                 "${getIt<WaterTracker>().totalMillis}ml",
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.indigo
+                  color: AquaGenieColors().deepPurple
                 ),
               ),
             ]
@@ -105,10 +106,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                 Text(
                   getIt<ProfileScreenProvider>().required_water_intake.toString(),
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.indigo
+                      color: AquaGenieColors().deepPurple
                   ),
                 ),
               ]
@@ -206,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             child: Text(
               "${millis}ml",
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
@@ -252,8 +253,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         radius: 85,
         lineWidth: 15,
         percent: state.waterTracker.waterPercentage,
-        progressColor: Colors.green.shade700,
-        backgroundColor: Colors.green.shade100,
+        progressColor: AquaGenieColors().deepPurple,
+        backgroundColor: AquaGenieColors().lightBlue,
         circularStrokeCap: CircularStrokeCap.round,
         center: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -263,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: Colors.green.shade700
+                color: AquaGenieColors().deepPurple,
               ),
             ),
 
@@ -282,53 +283,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget buildChart(HomeScreenProvider state) {
     return Column(
-      children: [
-        const Text(
-            "Here is your summary for today: ",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold
-          ),
-        ),
-
-        const SizedBox(height: 30,),
-
-        SfCartesianChart(
-          // plotAreaBackgroundColor: Colors.blue.shade100,
-          enableAxisAnimation: true,
-          primaryXAxis: CategoryAxis(),
-          palette: const <Color>[
-            Color.fromRGBO(75, 135, 185, 1),
-            Color.fromRGBO(192, 108, 132, 1),
-            Color.fromRGBO(246, 114, 128, 1),
-            Color.fromRGBO(248, 177, 149, 1),
-            Color.fromRGBO(116, 180, 155, 1),
-            Color.fromRGBO(0, 168, 181, 1),
-            Color.fromRGBO(73, 76, 162, 1),
-            Color.fromRGBO(255, 205, 96, 1),
-            Color.fromRGBO(255, 240, 219, 1),
-            Color.fromRGBO(238, 238, 238, 1)
-          ],
-          series: <ChartSeries>[
-            LineSeries<ChartData, String>(
-              enableTooltip: true,
-              dataSource: [
-                ChartData('8:00', 330),
-                ChartData('10:35', 80),
-                ChartData('12:15', 300),
-                ChartData('14:20', 330),
-                ChartData('17:30', 500)
-              ],
-              xValueMapper: (ChartData data, _) => data.x,
-              yValueMapper: (ChartData data, _) => data.y,
-              dataLabelSettings: const DataLabelSettings(isVisible : true),
+          children: [
+             Text(
+              "Here is your summary for today: ",
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                color: AquaGenieColors().deepPurple
+              ),
             ),
-          ],
-        ),
 
-        const SizedBox(height: 50,),
-      ],
-    );
+            const SizedBox(height: 30,),
+
+            SfCartesianChart(
+              // plotAreaBackgroundColor: Colors.blue.shade100,
+              enableAxisAnimation: true,
+              primaryXAxis: CategoryAxis(),
+              series: <ChartSeries>[
+                LineSeries<ChartData, String>(
+                  color: AquaGenieColors().deepPurple,
+                  width: 5,
+                  enableTooltip: true,
+                  dataSource: getIt<WaterTracker>().chartData,
+                  xValueMapper: (ChartData data, _) => data.x,
+                  yValueMapper: (ChartData data, _) => data.y,
+                  dataLabelSettings: const DataLabelSettings(isVisible: true),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 50,),
+          ],
+        );
   }
 }
 

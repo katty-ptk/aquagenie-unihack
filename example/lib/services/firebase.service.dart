@@ -14,4 +14,25 @@ class FirebaseService {
 
     return false;
   }
+
+  logWaterToFirestore(int millis) async {
+    // save time the user drank water
+    DateTime dateTime = DateTime.now();
+    String docKey = "${dateTime.hour}:${dateTime.minute}";
+
+    // add new value in firestore document with the key - time, and value - millis
+    final docRef = db.collection("water_tracking").doc("jojo@mail.com");
+
+    await docRef.update({
+      docKey: millis.toString()
+    });
+  }
+
+  Future<Map<String, dynamic>?> getWaterTrackingHistory() async {
+    final docRef = db.collection("water_tracking").doc("jojo@mail.com");
+
+    final doc  = await docRef.get();
+
+    return doc.data();
+  }
 }

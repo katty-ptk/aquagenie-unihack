@@ -1,5 +1,8 @@
 import 'package:bluetooth_classic/models/device.dart';
 import 'package:bluetooth_classic_example/providers/device.provider.dart';
+import 'package:bluetooth_classic_example/repos/water_tracker.repo.dart';
+import 'package:bluetooth_classic_example/services/user.service.dart';
+import 'package:bluetooth_classic_example/utils/get_it.util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,7 +88,7 @@ class DeviceScreen extends StatelessWidget {
                                           deviceProvider.discoveredDevices = [];
                                           deviceProvider.devices = [];
 
-                                          await deviceProvider.bluetoothClassicPlugin.write("REQUIRED_WATER_INTAKE->2400M");
+                                          await deviceProvider.bluetoothClassicPlugin.write("REQUIRED_WATER_INTAKE->2400MM");
                                         },
                                         child: Text(device.name ?? device.address))
                               ],

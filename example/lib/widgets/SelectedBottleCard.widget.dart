@@ -1,4 +1,5 @@
-import 'dart:async';
+import 'package:bluetooth_classic_example/services/firebase.service.dart';
+import 'package:bluetooth_classic_example/utils/colors.util.dart';
 import 'package:flutter/material.dart';
 
 import '../providers/device.provider.dart';
@@ -27,9 +28,8 @@ class _SelectedBottleSizeState extends State<SelectedBottleSize> with TickerProv
     HomeScreenProvider state = widget.state;
 
     return GestureDetector(
-      onTap: () {
-        state.onSelectedBottlePressed();
-        print("DEVICE PROFIVER STATUS OS: ${getIt<DeviceProvider>().deviceStatus}");
+      onTap: () async {
+        await state.onSelectedBottlePressed();
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -39,15 +39,15 @@ class _SelectedBottleSizeState extends State<SelectedBottleSize> with TickerProv
           width: 100,
           height: 120,
           decoration: BoxDecoration(
-            color: Colors.black87,
+            color: AquaGenieColors().darkBlue,
             borderRadius: BorderRadius.circular(10),
           ),
 
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                  Icons.water_drop,
+              const Icon(
+                  Icons.water_drop_outlined,
                   size: 48,
                   color: Colors.white
               ),
@@ -57,7 +57,7 @@ class _SelectedBottleSizeState extends State<SelectedBottleSize> with TickerProv
               Text(
                 "${state.selectedBottleMillis}ml",
                 style: const TextStyle(
-                    color: Colors.white54,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold
                 ),
               )

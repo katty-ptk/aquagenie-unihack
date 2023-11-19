@@ -3,6 +3,9 @@ import 'package:bluetooth_classic_example/screens/profile_screen/profile_screen.
 import 'package:bluetooth_classic_example/utils/get_it.util.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../services/firebase.service.dart';
+import 'home.screen.dart';
+
 class HomeScreenProvider extends ChangeNotifier {
   WaterTracker waterTracker;
 
@@ -10,10 +13,10 @@ class HomeScreenProvider extends ChangeNotifier {
 
   int selectedBottleMillis = 1000;
 
+  List<ChartData> chartData = [];
+
   HomeScreenProvider(this.waterTracker) {
     waterPercentage = waterTracker.waterPercentage;
-
-    print("required water intake in homescreen is: ${getIt<ProfileScreenProvider>().required_water_intake}");
   }
 
   onWaterPercentageChange(double newWaterPercentage) {
@@ -26,9 +29,19 @@ class HomeScreenProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  onSelectedBottlePressed() {
-    // onWaterPercentageChange(waterPercentage + selectedBottleMillis.toDouble() / 1000);
+  onSelectedBottlePressed() async {
     waterTracker.onWaterPercentageChanged(selectedBottleMillis);
+    await FirebaseService().logWaterToFirestore(selectedBottleMillis);
+    var waterTrackingHistory = await FirebaseService().getWaterTrackingHistory();
+
+    if ( waterTrackingHistory != null ) {
+      waterTrackingHistory.forEach((key, value) {
+        chartData.add(
+          ChartData(key, double.parse(value))
+        );
+      });
+    }
+
     notifyListeners();
   }
 

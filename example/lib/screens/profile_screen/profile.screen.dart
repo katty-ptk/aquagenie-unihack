@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:bluetooth_classic_example/providers/auth.provider.dart';
 import 'package:bluetooth_classic_example/providers/user.provider.dart';
 import 'package:bluetooth_classic_example/screens/profile_screen/profile_screen.provider.dart';
+import 'package:bluetooth_classic_example/utils/colors.util.dart';
 import 'package:bluetooth_classic_example/utils/get_it.util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -251,28 +252,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       height: 300,
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.black87,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30)
+          bottomRight: Radius.circular(30),
         )
       ),
-      child: Center(
-        child: Text(
-            "${state.userProfileData!.username}, ${state.userProfileData!.gender}",
-            style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              color: Colors.white
-            ),
+          child: Stack(
+            children: [
+              Positioned(left: -35, top: 80, child: Image.asset('lib/assets/images/cute_robot_face.png', height: 175,)),
+              Positioned(
+                right: 70,
+                top: 165,
+                child: Text(
+                  "${state.userProfileData!.username}, ${state.userProfileData!.gender}",
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                  ),
+                ),
+              ),
+            ],
           ),
-      ),
     );
   }
 
   Widget buildBottomContainer(ProfileScreenProvider state) {
-    return Container(
+    return SizedBox(
       height: 500,
       child: ListView(
             children: [
@@ -281,7 +289,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               InfoCard("Height (cm)", state.userProfileData!.height.toString()),
               InfoCard("Activity Level", state.userProfileData!.activity_level.toString()),
               InfoCard("Required Water Intake (ml)", state.userProfileData!.required_water_intake.toString()),
-              ElevatedButton(onPressed: () => getIt<AuthProvider>().signOut(), child: Text("sign out"))
             ],
       ),
     );
@@ -294,10 +301,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Card(
             elevation: 20,
             shadowColor: Colors.black87,
-            // color: Colors.pink.shade100,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
-              //set border radius more than 50% of height and width to make circle
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -309,22 +314,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         key,
                       style: TextStyle(
                         fontSize: 16,
-                        // fontWeight: FontWeight.bold,
-                        color: Colors.indigo.shade300
+                        fontWeight: FontWeight.bold,
+                        color: AquaGenieColors().darkBlue
                       ),
                     ),
 
                     Divider(
-                      thickness: 3,
-                      color: Colors.grey.shade200,
+                      thickness: 2,
+                      color: AquaGenieColors().lightBlue
                     ),
 
                     Text(
                         value,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                        color: Colors.indigo
+                        color: AquaGenieColors().deepPurple
                       ),
                     ),
                   ],
